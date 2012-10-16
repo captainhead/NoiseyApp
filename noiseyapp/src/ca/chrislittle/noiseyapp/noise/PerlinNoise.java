@@ -3,13 +3,26 @@ package ca.chrislittle.noiseyapp.noise;
 import java.util.Random;
 
 public class PerlinNoise {
+	private float baseFrequency;
+	private float baseAmplitude; // TODO: Necessary? Or just multiply returned noise value?
+	private float lacunarity; // Frequency multiplier for subsequent octaves
+	private float persistence; // Amplitude multiplier for subsequent octaves
+	private int octaves; // Number of fBM octaves to combine
+	
 	private int[] p; // Permutation table
 	// Gradient vectors
 	private float[] Gx;
 	private float[] Gy;
 	private float[] Gz;
 	
+	
 	public PerlinNoise() {
+		baseFrequency = 1.0f;
+		baseAmplitude = 1.0f;
+		lacunarity = 2.0f;
+		persistence = 0.5f;
+		octaves = 1;
+
 		p = new int[256];
 		Gx = new float[256];
 		Gy = new float[256];
@@ -38,8 +51,69 @@ public class PerlinNoise {
 		}
 	}
 	
+	public void setBaseFrequency(float f) {
+		// Ensure a positive frequency value
+		baseFrequency = Math.abs(f);
+	}
 	
+	public void setBaseAmplitude(float a) {
+		baseAmplitude = a;
+	}
+	
+	public void setLacunarity(float l) {
+		// Ensure frequency isn't multiplied by a negative value
+		lacunarity = Math.abs(l);
+	}
+	
+	public void setPersistence(float p) {
+		persistence = p;
+	}
+	
+	public void setOctaves(int o){
+		// Ensure number of octaves is 1 or greater
+		if (o <= 0) return;
+		octaves = o;
+	}
+	
+	
+	/**
+	 * Produce a noise value based on fractal Brownian motion (i.e. combine
+	 * multiple octaves of Perlin noise).
+	 *  
+	 * @param sample_x Noise sample coordinates
+	 * @param sample_y
+	 * @param sample_z
+	 * @return A noise value clamped to the range [-1, 1]
+	 */
 	public float noise(float sample_x, float sample_y, float sample_z) {
+		float noise = 0.0f;
+		float freq = baseFrequency;
+		float amp = baseAmplitude;
+		for (int i=0; i<octaves; ++i) {
+			noise += amp * computeNoise(sample_x*freq, sample_y*freq, sample_z*freq);
+			
+			freq *= lacunarity;
+			amp *= persistence;
+		}
+		
+		if (noise > 1.0f)
+			noise = 1.0f;
+		if (noise < -1.0f)
+			noise = -1.0f;
+		
+		return noise;
+	}
+	
+	
+	/**
+	 * Generate a smoothed Perlin (gradient) noise value.
+	 * 
+	 * @param sample_x Noise sample coordinates
+	 * @param sample_y
+	 * @param sample_z
+	 * @return A floating point noise value, usually in the range [-1, 1]
+	 */
+	public float computeNoise(float sample_x, float sample_y, float sample_z) {
 		// Clamp sample point to integer unit cube coordinates
 		int x0 = (int)sample_x;
 		int x1 = x0 + 1;

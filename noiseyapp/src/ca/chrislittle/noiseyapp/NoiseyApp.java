@@ -6,7 +6,7 @@ import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import ca.chrislittle.noiseyapp.noise.NoiseArray2D;
+import ca.chrislittle.noiseyapp.noise.NoiseMap;
 import ca.chrislittle.noiseyapp.noise.PerlinNoise;
 
 public class NoiseyApp {
@@ -30,20 +30,17 @@ public class NoiseyApp {
 		window.setResizable(false);
 		window.setVisible(true);
 		window.pack();
-		window.setLocation(50, 50);
+		window.setLocation(100, 10);
 		
 		
 		// Create a texture
-		texture = new Texture(768,768);
-		//NoiseArray2D noiseArray = new NoiseArray2D(texture.width, texture.height, 10, 0.5f, 2.0f, true, true);
-		//generatePlasmaTexture(texture, noiseArray);
-		//generateColourStepTexture(texture, noiseArray);
-		//generateCloudTexture(texture, noiseArray);
-		//generateMarbleTexture(texture, noiseArray);
+		texture = new Texture(1000,1000);
+		//generatePlasmaTexture(texture);
+		//generateCloudTexture(texture);
+		//generateMarbleTexture(texture);
 		
-		NoiseArray2D noiseArray = new NoiseArray2D(texture.width, texture.height, 10, 0.5f, 4.0f, true, true);
-		generateLickingFlameTexture(texture, noiseArray);
-		//generateLightningTexture(texture,noiseArray);
+		//generateLickingFlameTexture(texture);
+		generateLightningTexture(texture);
 
 		//generateWoodTexture(texture);
 		
@@ -55,51 +52,60 @@ public class NoiseyApp {
 	
 	
 	
-	public void generatePlasmaTexture(Texture tex, NoiseArray2D noiseArray) {
-		float noise;
+	public void generatePlasmaTexture(Texture tex) {
+		PerlinNoise noiseMaker = new PerlinNoise();
+		noiseMaker.setOctaves(10);
+		noiseMaker.setBaseFrequency(2.0f);
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, noiseMaker);
+		map.build();
+		map.remap();
+		
+		ColorMap colorMap = new ColorMap();
+		colorMap.addColor(0.0f, new Color(0x000000));
+		colorMap.addColor(0.5f, new Color(0xAA22FF));
+		colorMap.addColor(1.0f, new Color(0xFFFFFF));
+//		colorMap.addColor(0.0f,  new Color(0x000000));
+//		colorMap.addColor(0.143f, new Color(0x0000FF));
+//		colorMap.addColor(0.286f, new Color(0xFF00FF));
+//		colorMap.addColor(0.429f, new Color(0xFF0000));
+//		colorMap.addColor(0.571f, new Color(0xFFFF00));
+//		colorMap.addColor(0.714f, new Color(0x00FF00));
+//		colorMap.addColor(0.857f, new Color(0x00FFFF));
+//		colorMap.addColor(1.0f,  new Color(0xFFFFFF));
+//		colorMap.addColor(0.2f, new Color(0x000000));
+//		colorMap.addColor(0.3f, new Color(0x0000FF));
+//		colorMap.addColor(0.4f, new Color(0x00FFFF));
+//		colorMap.addColor(0.5f, new Color(0x00FF00));
+//		colorMap.addColor(0.6f, new Color(0xFFFF00));
+//		colorMap.addColor(0.7f, new Color(0xFF0000));
+//		colorMap.addColor(0.8f, new Color(0xFFFFFF));
 
+		float noise;
 		for (int y=0; y<tex.height; ++y) {
 			for (int x=0; x<tex.width; ++x) {
-				noise = noiseArray.getNoise(x, y);
+				noise = map.getNoise(x, y);
 				
 				noise += 1.0f;
 				noise *= 0.5f;
 				
 				// Apply the colour value
-				tex.pixels[y*tex.width + x] = new Color(noise,noise,noise).getRGB();
+				tex.pixels[y*tex.width + x] = colorMap.getColor(noise).getRGB();
 			}
 		}
 	}
 	
-	public void generateColourStepTexture(Texture tex, NoiseArray2D noiseArray) {
-		float noise;
-
-		for (int y=0; y<tex.height; ++y) {
-			for (int x=0; x<tex.width; ++x) {
-				noise = noiseArray.getNoise(x, y);
-
-				Color c = new Color(0xFFFFFF);
-				if (noise > 0.8f)
-					c = new Color(0x00FFFF);
-				else if (noise > 0.4f)
-					c = new Color(0x0000FF);
-				else if (noise > 0.0f)
-					c = new Color(0xFF00FF);
-				else if (noise > -0.4f)
-					c = new Color(0xFF0000);
-				else if (noise > -0.8f)
-					c = new Color(0xFFFF00);
-				
-				// Apply the colour value
-				tex.pixels[y*tex.width + x] = c.getRGB();
-			}
-		}
-	}
-	
-	public void generateCloudTexture(Texture tex, NoiseArray2D noiseArray) {
-		float noise;
+	public void generateCloudTexture(Texture tex) {
 		float density = 0.6f; // Cloud density
-		float sharpness = 0.01f; // Hardness of cloud edges (lower value -> sharper edges)
+		float sharpness = 0.013f; // Hardness of cloud edges (lower value -> sharper edges)
+
+		PerlinNoise noiseMaker = new PerlinNoise();
+		noiseMaker.setOctaves(10);
+		noiseMaker.setBaseFrequency(2.0f);
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, noiseMaker);
+		map.build();
+		map.remap();
 		
 		ColorMap colorMap = new ColorMap();
 		colorMap.addColor(0.0f, new Color(0x007FFF));
@@ -107,9 +113,10 @@ public class NoiseyApp {
 		
 		
 
+		float noise;
 		for (int y=0; y<tex.height; ++y) {
 			for (int x=0; x<tex.width; ++x) {
-				noise = noiseArray.getNoise(x, y);
+				noise = map.getNoise(x, y); //noiseArray.getNoise(x, y);
 
 				noise += 1.0f;
 				noise *= 0.5f;
@@ -128,20 +135,27 @@ public class NoiseyApp {
 		}
 	}
 	
-	public void generateMarbleTexture(Texture tex, NoiseArray2D noiseArray) {
-		float noise;
+	public void generateMarbleTexture(Texture tex) {
 		float bands = 4.0f; // Frequency of the base sin-wave pattern
 		float scale = 0.4f; // Scale the effect of noise on the sin-wave pattern
-		
 		float range = 2.0f*(float)Math.PI;
+
+		PerlinNoise noiseMaker = new PerlinNoise();
+		noiseMaker.setOctaves(10);
+		noiseMaker.setBaseFrequency(2.0f);
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, noiseMaker);
+		map.build();
+		map.remap();
 		
 		ColorMap colorMap = new ColorMap();
-		colorMap.addColor(0.0f, new Color(0x374912));
-		colorMap.addColor(1.0f, new Color(0xD6E6CC));
+		colorMap.addColor(0.0f, new Color(0x000000));
+		colorMap.addColor(1.0f, new Color(0xFFFFFF));
 
+		float noise;
 		for (int y=0; y<tex.height; ++y) {
 			for (int x=0; x<tex.width; ++x) {
-				noise = noiseArray.getNoise(x, y);
+				noise = map.getNoise(x, y);
 				
 				noise = (float)Math.sin(range*bands*((float)x/(float)tex.width + scale*noise));
 				
@@ -154,18 +168,25 @@ public class NoiseyApp {
 		}
 	}
 	
-	public void generateLickingFlameTexture(Texture tex, NoiseArray2D noiseArray) {
-		float noise;
+	public void generateLickingFlameTexture(Texture tex) {
+		PerlinNoise noiseMaker = new PerlinNoise();
+		noiseMaker.setOctaves(10);
+		noiseMaker.setBaseFrequency(4.0f);
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, noiseMaker);
+		map.build();
+		map.remap();
 		
 		ColorMap colorMap = new ColorMap();
 		colorMap.addColor(0.0f, new Color(0x880000));
 		colorMap.addColor(0.2f, new Color(0xFF0000));
 		colorMap.addColor(0.6f, new Color(0xFFFF00));
 		colorMap.addColor(1.0f, new Color(0xFFFFFF));
-
+		
+		float noise;
 		for (int y=0; y<tex.height; ++y) {
 			for (int x=0; x<tex.width; ++x) {
-				noise = noiseArray.getNoise(x, y);
+				noise = map.getNoise(x,y);
 				
 				noise = Math.abs(noise);
 				
@@ -175,17 +196,24 @@ public class NoiseyApp {
 		}
 	}
 	
-	public void generateLightningTexture(Texture tex, NoiseArray2D noiseArray) {
-		float noise;
+	public void generateLightningTexture(Texture tex) {
+		PerlinNoise noiseMaker = new PerlinNoise();
+		noiseMaker.setOctaves(10);
+		noiseMaker.setBaseFrequency(4.0f);
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, noiseMaker);
+		map.build();
+		map.remap();
 		
 		ColorMap colorMap = new ColorMap();
 		colorMap.addColor(0.5f, new Color(0x000000));
-		colorMap.addColor(0.8f, new Color(0x0000FF));
+		colorMap.addColor(0.94f, new Color(0x0000FF));
 		colorMap.addColor(1.0f, new Color(0xFFFFFF));
 
+		float noise;
 		for (int y=0; y<tex.height; ++y) {
 			for (int x=0; x<tex.width; ++x) {
-				noise = noiseArray.getNoise(x, y);
+				noise = map.getNoise(x, y);
 				
 				noise = 1.0f - Math.abs(noise);
 				
@@ -204,13 +232,13 @@ public class NoiseyApp {
 		float freq;
 		float amp;
 		
-		float majorFrequency = 2.0f;
+		float majorFrequency = 1.0f;
 		int majorOctaves = 1;
 		float majorPersistence = 0.5f;
 		float majorBands = 32.0f; // "Density" of major wood bands (i.e. frequency of discontinuities)
 		
 		float grainFrequency = 32.0f; // Control noise frequency
-		float grainAmplitude = 0.3f; // Controls intensity of grain colour change
+		float grainAmplitude = 0.2f; // Controls intensity of grain colour change
 		int grainOctaves = 2;
 		float grainPersistence = 0.5f;
 		float grainStretch = 16.0f; // Control noise sample position stretch factor
@@ -226,13 +254,13 @@ public class NoiseyApp {
 				sample_x = (float)x/tex.width;
 				sample_y = (float)y/tex.height;
 				
-				noise = 0.0f;
 				
 				// Major wood pattern
+				noise = 0.0f;
 				freq = majorFrequency;
 				amp = 1.0f;
 				for (int i=0; i<majorOctaves; ++i) {
-					noise += amp * noiseMaker.noise(sample_x*freq, sample_y*freq, 0.5f);
+					noise += amp * noiseMaker.computeNoise(sample_x*freq, sample_y*freq, 0.5f);
 					
 					freq *= 2.0f;
 					amp *= majorPersistence;
@@ -254,7 +282,7 @@ public class NoiseyApp {
 				freq = grainFrequency;
 				amp = grainAmplitude;
 				for (int i=0; i<grainOctaves; ++i) {
-					grainNoise += amp * noiseMaker.noise(sample_x*freq*grainStretch, sample_y*freq, 0.5f);
+					grainNoise += amp * noiseMaker.computeNoise(sample_x*freq*grainStretch, sample_y*freq, 0.5f);
 					
 					freq *= 2.0f;
 					amp *= grainPersistence;
@@ -266,6 +294,7 @@ public class NoiseyApp {
 					noise = 1.0f;
 				if (noise < 0.0f)
 					noise = 0.0f;
+				
 
 				// Apply the colour value
 				Color result = colorMap.getColor(noise);

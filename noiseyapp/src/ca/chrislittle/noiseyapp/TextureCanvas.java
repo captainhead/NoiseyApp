@@ -10,12 +10,15 @@ public class TextureCanvas extends Canvas {
 
 	private static final long serialVersionUID = 1L;
 	
+	private static final int WIDTH = 1000;
+	private static final int HEIGHT = 1000;
+	
 	public BufferedImage image;
 	
 	
 	public TextureCanvas() {
 		// Default to 512x512 texture display
-		Dimension defaultSize = new Dimension(768,768);
+		Dimension defaultSize = new Dimension(WIDTH, HEIGHT);
 		setSize(defaultSize);
 		setPreferredSize(defaultSize);
 		setMaximumSize(defaultSize);
