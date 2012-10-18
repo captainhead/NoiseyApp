@@ -6,8 +6,13 @@ import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import ca.chrislittle.noiseyapp.noise.Absolute;
+import ca.chrislittle.noiseyapp.noise.Add;
+import ca.chrislittle.noiseyapp.noise.BrownianNoise;
 import ca.chrislittle.noiseyapp.noise.NoiseMap;
 import ca.chrislittle.noiseyapp.noise.PerlinNoise;
+import ca.chrislittle.noiseyapp.noise.ScaleBias;
+import ca.chrislittle.noiseyapp.noise.ScaleInput;
 
 public class NoiseyApp {
 
@@ -34,15 +39,16 @@ public class NoiseyApp {
 		
 		
 		// Create a texture
-		texture = new Texture(1000,1000);
+		texture = new Texture(512,512);
 		//generatePlasmaTexture(texture);
 		//generateCloudTexture(texture);
 		//generateMarbleTexture(texture);
 		
-		//generateLickingFlameTexture(texture);
-		generateLightningTexture(texture);
+		generateLickingFlameTexture(texture);
+		//generateLightningTexture(texture);
 
 		//generateWoodTexture(texture);
+		//generateWood2Texture(texture);
 		
 		
 		// Send texture to display
@@ -54,10 +60,12 @@ public class NoiseyApp {
 	
 	public void generatePlasmaTexture(Texture tex) {
 		PerlinNoise noiseMaker = new PerlinNoise();
-		noiseMaker.setOctaves(10);
-		noiseMaker.setBaseFrequency(2.0f);
 		
-		NoiseMap map = new NoiseMap(tex.width, tex.height, noiseMaker);
+		BrownianNoise bNoiseMaker = new BrownianNoise(noiseMaker);
+		bNoiseMaker.setOctaves(10);
+		bNoiseMaker.setBaseFrequency(2.0f);
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
 		map.build();
 		map.remap();
 		
@@ -100,10 +108,12 @@ public class NoiseyApp {
 		float sharpness = 0.013f; // Hardness of cloud edges (lower value -> sharper edges)
 
 		PerlinNoise noiseMaker = new PerlinNoise();
-		noiseMaker.setOctaves(10);
-		noiseMaker.setBaseFrequency(2.0f);
 		
-		NoiseMap map = new NoiseMap(tex.width, tex.height, noiseMaker);
+		BrownianNoise bNoiseMaker = new BrownianNoise(noiseMaker);
+		bNoiseMaker.setOctaves(10);
+		bNoiseMaker.setBaseFrequency(2.0f);
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
 		map.build();
 		map.remap();
 		
@@ -141,16 +151,18 @@ public class NoiseyApp {
 		float range = 2.0f*(float)Math.PI;
 
 		PerlinNoise noiseMaker = new PerlinNoise();
-		noiseMaker.setOctaves(10);
-		noiseMaker.setBaseFrequency(2.0f);
+
+		BrownianNoise bNoiseMaker = new BrownianNoise(noiseMaker);
+		bNoiseMaker.setOctaves(10);
+		bNoiseMaker.setBaseFrequency(2.0f);
 		
-		NoiseMap map = new NoiseMap(tex.width, tex.height, noiseMaker);
+		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
 		map.build();
 		map.remap();
 		
 		ColorMap colorMap = new ColorMap();
-		colorMap.addColor(0.0f, new Color(0x000000));
-		colorMap.addColor(1.0f, new Color(0xFFFFFF));
+		colorMap.addColor(0.0f, new Color(0x225533));
+		colorMap.addColor(1.0f, new Color(0xF8FFF8));
 
 		float noise;
 		for (int y=0; y<tex.height; ++y) {
@@ -170,10 +182,14 @@ public class NoiseyApp {
 	
 	public void generateLickingFlameTexture(Texture tex) {
 		PerlinNoise noiseMaker = new PerlinNoise();
-		noiseMaker.setOctaves(10);
-		noiseMaker.setBaseFrequency(4.0f);
 		
-		NoiseMap map = new NoiseMap(tex.width, tex.height, noiseMaker);
+		Absolute absNoiseMaker = new Absolute(noiseMaker);
+
+		BrownianNoise bNoiseMaker = new BrownianNoise(absNoiseMaker);
+		bNoiseMaker.setOctaves(10);
+		bNoiseMaker.setBaseFrequency(4.0f);
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
 		map.build();
 		map.remap();
 		
@@ -198,10 +214,12 @@ public class NoiseyApp {
 	
 	public void generateLightningTexture(Texture tex) {
 		PerlinNoise noiseMaker = new PerlinNoise();
-		noiseMaker.setOctaves(10);
-		noiseMaker.setBaseFrequency(4.0f);
+
+		BrownianNoise bNoiseMaker = new BrownianNoise(noiseMaker);
+		bNoiseMaker.setOctaves(10);
+		bNoiseMaker.setBaseFrequency(4.0f);
 		
-		NoiseMap map = new NoiseMap(tex.width, tex.height, noiseMaker);
+		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
 		map.build();
 		map.remap();
 		
@@ -260,7 +278,7 @@ public class NoiseyApp {
 				freq = majorFrequency;
 				amp = 1.0f;
 				for (int i=0; i<majorOctaves; ++i) {
-					noise += amp * noiseMaker.computeNoise(sample_x*freq, sample_y*freq, 0.5f);
+					noise += amp * noiseMaker.noise(sample_x*freq, sample_y*freq, 0.5f);
 					
 					freq *= 2.0f;
 					amp *= majorPersistence;
@@ -282,7 +300,7 @@ public class NoiseyApp {
 				freq = grainFrequency;
 				amp = grainAmplitude;
 				for (int i=0; i<grainOctaves; ++i) {
-					grainNoise += amp * noiseMaker.computeNoise(sample_x*freq*grainStretch, sample_y*freq, 0.5f);
+					grainNoise += amp * noiseMaker.noise(sample_x*freq*grainStretch, sample_y*freq, 0.5f);
 					
 					freq *= 2.0f;
 					amp *= grainPersistence;
@@ -299,6 +317,91 @@ public class NoiseyApp {
 				// Apply the colour value
 				Color result = colorMap.getColor(noise);
 				tex.pixels[y*tex.width + x] = result.getRGB();
+			}
+		}
+	}
+	
+	public void generateWood2Texture(Texture tex) {
+		// Major wood grain pattern
+		PerlinNoise grainNoise = new PerlinNoise();
+
+		BrownianNoise bGrainNoise = new BrownianNoise(grainNoise);
+		bGrainNoise.setOctaves(10);
+		bGrainNoise.setBaseFrequency(1.0f);
+		
+		ScaleInput scaleGrainNoise = new ScaleInput(bGrainNoise);
+		scaleGrainNoise.setScaleX(6.0f);
+		
+		// Finer bumps/detail pattern
+		PerlinNoise bumpNoise = new PerlinNoise();
+
+		BrownianNoise bBumpNoise = new BrownianNoise(bumpNoise);
+		bBumpNoise.setOctaves(4);
+		bBumpNoise.setBaseFrequency(1.0f);
+		
+		ScaleInput stretchedBumpNoise = new ScaleInput(bBumpNoise);
+		stretchedBumpNoise.setScaleX(50.0f);
+		
+		ScaleBias scaledBumpNoise = new ScaleBias(stretchedBumpNoise);
+		scaledBumpNoise.setScale(0.1f);
+		
+		// Combine patterns
+		Add noiseSum = new Add(scaleGrainNoise, scaledBumpNoise);
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, noiseSum);
+		map.build();
+		map.remap();
+		
+		
+		ColorMap colorMap = new ColorMap();
+//		colorMap.addColor(0.0f, new Color(0x000000));
+//		colorMap.addColor(1.0f, new Color(0xFFFFFF));
+		
+//		colorMap.addColor(0.0f, new Color(0x472207)); // Dark
+//		colorMap.addColor(1.0f, new Color(0xA55015)); // Light
+		
+		colorMap.addColor(0.0f, new Color(0x3A1D0D)); // Dark (top)
+		colorMap.addColor(0.17f, new Color(0x532913));
+		colorMap.addColor(0.3f, new Color(0x75462A));
+		colorMap.addColor(0.375f, new Color(0x7B4C30));
+		colorMap.addColor(0.5f, new Color(0x7B4C30));
+		colorMap.addColor(0.6f, new Color(0x200900));
+		colorMap.addColor(0.625f, new Color(0x79462B));
+		colorMap.addColor(0.7f, new Color(0x79462B));
+		colorMap.addColor(0.81f, new Color(0x4A260E));
+		colorMap.addColor(1.0f, new Color(0x6C3E26)); // Light (bottom)
+
+//		colorMap.addColor(0.0f, new Color(0x3A1D0D)); // Dark (top)
+//		colorMap.addColor(0.33f, new Color(0x532913));
+//		colorMap.addColor(0.4f, new Color(0x75462A));
+//		colorMap.addColor(0.4375f, new Color(0x7B4C30));
+//		colorMap.addColor(0.5f, new Color(0x7B4C30));
+//		colorMap.addColor(0.55f, new Color(0x200900));
+//		colorMap.addColor(0.5625f, new Color(0x79462B));
+//		colorMap.addColor(0.6f, new Color(0x79462B));
+//		colorMap.addColor(0.66f, new Color(0x4A260E));
+//		colorMap.addColor(1.0f, new Color(0x6C3E26)); // Light (bottom)
+		
+//		colorMap.addColor(0.05f, new Color(0x6D3F27));
+//		colorMap.addColor(0.2f, new Color(0x4A260E));
+//		colorMap.addColor(0.3f, new Color(0x864F30));
+//		colorMap.addColor(0.4f, new Color(0x864F30));
+//		colorMap.addColor(0.5f, new Color(0x200C03));
+//		colorMap.addColor(0.6f, new Color(0x7D4A2D));
+//		colorMap.addColor(0.75f, new Color(0x7D4A2D));
+//		colorMap.addColor(0.9f, new Color(0x482014));
+
+		
+		float noise;
+		for (int y=0; y<tex.height; ++y) {
+			for (int x=0; x<tex.width; ++x) {
+				noise = map.getNoise(x, y);
+				
+				noise += 1.0f;
+				noise *= 0.5f;
+				
+				// Apply the colour value
+				tex.pixels[y*tex.width + x] = colorMap.getColor(noise).getRGB();
 			}
 		}
 	}

@@ -5,14 +5,14 @@ public class NoiseMap {
 	private int width;
 	private int height;
 
-	private PerlinNoise source;
+	private NoiseSource source;
 	private float[] noiseValues;
 	// Minimum and maximum noise values stored in this noise array
 	private float min;
 	private float max;
 	
 	
-	public NoiseMap(int width, int height, PerlinNoise noise_source) {
+	public NoiseMap(int width, int height, NoiseSource noise_source) {
 		this.width = width;
 		this.height = height;
 		
@@ -48,11 +48,6 @@ public class NoiseMap {
 				
 				noise = source.noise(sample_x, sample_y, 0.5f);
 				
-				if (noise > 1.0f)
-					noise = 1.0f;
-				else if (noise < -1.0f)
-					noise = -1.0f;
-				
 				// Keep track of highest and lowest noise values
 				if (noise < min)
 					min = noise;
@@ -84,6 +79,12 @@ public class NoiseMap {
 				// "Stretch" and remap noise distribution to more evenly fill [-1, 1] range
 				scale = (noise - min) / (max - min);
 				noise = -1.0f + 2.0f*scale;
+				
+				// Clamp the noise value, just to be sure
+				if (noise > 1.0f)
+					noise = 1.0f;
+				if (noise < -1.0f)
+					noise = -1.0f;
 				
 				noiseValues[y*width + x] = noise;
 			}

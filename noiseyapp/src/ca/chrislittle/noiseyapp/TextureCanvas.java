@@ -10,8 +10,8 @@ public class TextureCanvas extends Canvas {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final int WIDTH = 1000;
-	private static final int HEIGHT = 1000;
+	private static final int WIDTH = 512;
+	private static final int HEIGHT = 512;
 	
 	public BufferedImage image;
 	
