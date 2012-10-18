@@ -40,11 +40,11 @@ public class NoiseyApp {
 		
 		// Create a texture
 		texture = new Texture(512,512);
-		//generatePlasmaTexture(texture);
+		generatePlasmaTexture(texture);
 		//generateCloudTexture(texture);
 		//generateMarbleTexture(texture);
 		
-		generateLickingFlameTexture(texture);
+		//generateLickingFlameTexture(texture);
 		//generateLightningTexture(texture);
 
 		//generateWoodTexture(texture);
@@ -71,8 +71,7 @@ public class NoiseyApp {
 		
 		ColorMap colorMap = new ColorMap();
 		colorMap.addColor(0.0f, new Color(0x000000));
-		colorMap.addColor(0.5f, new Color(0xAA22FF));
-		colorMap.addColor(1.0f, new Color(0xFFFFFF));
+		colorMap.addColor(1.0f, new Color(0xEE44FF));
 //		colorMap.addColor(0.0f,  new Color(0x000000));
 //		colorMap.addColor(0.143f, new Color(0x0000FF));
 //		colorMap.addColor(0.286f, new Color(0xFF00FF));
@@ -186,15 +185,15 @@ public class NoiseyApp {
 		Absolute absNoiseMaker = new Absolute(noiseMaker);
 
 		BrownianNoise bNoiseMaker = new BrownianNoise(absNoiseMaker);
-		bNoiseMaker.setOctaves(10);
-		bNoiseMaker.setBaseFrequency(4.0f);
+		bNoiseMaker.setOctaves(4);
+		bNoiseMaker.setBaseFrequency(2.0f);
 		
 		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
 		map.build();
 		map.remap();
 		
 		ColorMap colorMap = new ColorMap();
-		colorMap.addColor(0.0f, new Color(0x880000));
+		colorMap.addColor(0.0f, new Color(0x990000));
 		colorMap.addColor(0.2f, new Color(0xFF0000));
 		colorMap.addColor(0.6f, new Color(0xFFFF00));
 		colorMap.addColor(1.0f, new Color(0xFFFFFF));
@@ -216,7 +215,7 @@ public class NoiseyApp {
 		PerlinNoise noiseMaker = new PerlinNoise();
 
 		BrownianNoise bNoiseMaker = new BrownianNoise(noiseMaker);
-		bNoiseMaker.setOctaves(10);
+		bNoiseMaker.setOctaves(8);
 		bNoiseMaker.setBaseFrequency(4.0f);
 		
 		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);

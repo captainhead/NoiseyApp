@@ -52,11 +52,11 @@ public class PerlinNoise extends NoiseSource{
 	@Override
 	public float noise(float sample_x, float sample_y, float sample_z) {
 		// Clamp sample point to integer unit cube coordinates
-		int x0 = (int)sample_x;
+		int x0 = (int)Math.floor(sample_x);
 		int x1 = x0 + 1;
-		int y0 = (int)sample_y;
+		int y0 = (int)Math.floor(sample_y);
 		int y1 = y0 + 1;
-		int z0 = (int)sample_z;
+		int z0 = (int)Math.floor(sample_z);
 		int z1 = z0 + 1;
 		
 		// Determine sample position within unit cube
@@ -69,24 +69,24 @@ public class PerlinNoise extends NoiseSource{
 		
 		// For each unit cube vertex, compute dot product between gradient vector and vector to sample position
 		int gIndex;
-		gIndex = p[(x0 + p[(y0 + p[z0 % 256]) % 256]) % 256];
+		gIndex = p[(x0 + p[(y0 + p[z0 & 255]) & 255]) & 255];
 		float d000 = Gx[gIndex]*px0 + Gy[gIndex]*py0 + Gz[gIndex]*pz0;
-		gIndex = p[(x1 + p[(y0 + p[z0 % 256]) % 256]) % 256];
+		gIndex = p[(x1 + p[(y0 + p[z0 & 255]) & 255]) & 255];
 		float d001 = Gx[gIndex]*px1 + Gy[gIndex]*py0 + Gz[gIndex]*pz0;
 
-		gIndex = p[(x0 + p[(y1 + p[z0 % 256]) % 256]) % 256];
+		gIndex = p[(x0 + p[(y1 + p[z0 & 255]) & 255]) & 255];
 		float d010 = Gx[gIndex]*px0 + Gy[gIndex]*py1 + Gz[gIndex]*pz0;
-		gIndex = p[(x1 + p[(y1 + p[z0 % 256]) % 256]) % 256];
+		gIndex = p[(x1 + p[(y1 + p[z0 & 255]) & 255]) & 255];
 		float d011 = Gx[gIndex]*px1 + Gy[gIndex]*py1 + Gz[gIndex]*pz0;
 
-		gIndex = p[(x0 + p[(y0 + p[z1 % 256]) % 256]) % 256];
+		gIndex = p[(x0 + p[(y0 + p[z1 & 255]) & 255]) & 255];
 		float d100 = Gx[gIndex]*px0 + Gy[gIndex]*py0 + Gz[gIndex]*pz1;
-		gIndex = p[(x1 + p[(y0 + p[z1 % 256]) % 256]) % 256];
+		gIndex = p[(x1 + p[(y0 + p[z1 & 255]) & 255]) & 255];
 		float d101 = Gx[gIndex]*px1 + Gy[gIndex]*py0 + Gz[gIndex]*pz1;
 
-		gIndex = p[(x0 + p[(y1 + p[z1 % 256]) % 256]) % 256];
+		gIndex = p[(x0 + p[(y1 + p[z1 & 255]) & 255]) & 255];
 		float d110 = Gx[gIndex]*px0 + Gy[gIndex]*py1 + Gz[gIndex]*pz1;
-		gIndex = p[(x1 + p[(y1 + p[z1 % 256]) % 256]) % 256];
+		gIndex = p[(x1 + p[(y1 + p[z1 & 255]) & 255]) & 255];
 		float d111 = Gx[gIndex]*px1 + Gy[gIndex]*py1 + Gz[gIndex]*pz1;
 		
 		// Interpolate dot product values at sample point using interpolation curve: 6x^5 - 15x^4 + 10x^3
