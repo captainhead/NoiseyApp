@@ -43,10 +43,10 @@ public class NoiseMap {
 		
 		for (int y=0; y<this.height; ++y) {
 			for (int x=0; x<this.width; ++x) {
-				sample_x = (float)x/this.width;
-				sample_y = (float)y/this.height;
+				sample_x = -0.5f + (float)x/this.width;
+				sample_y = -0.5f + (float)y/this.height;
 				
-				noise = source.noise(sample_x, sample_y, 0.5f);
+				noise = source.noise(sample_x, sample_y, 0.0f);
 				
 				// Keep track of highest and lowest noise values
 				if (noise < min)

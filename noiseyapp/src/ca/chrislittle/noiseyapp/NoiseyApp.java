@@ -9,10 +9,14 @@ import javax.swing.JPanel;
 import ca.chrislittle.noiseyapp.noise.Absolute;
 import ca.chrislittle.noiseyapp.noise.Add;
 import ca.chrislittle.noiseyapp.noise.BrownianNoise;
+import ca.chrislittle.noiseyapp.noise.Cylinders;
 import ca.chrislittle.noiseyapp.noise.NoiseMap;
 import ca.chrislittle.noiseyapp.noise.PerlinNoise;
+import ca.chrislittle.noiseyapp.noise.Rotate;
 import ca.chrislittle.noiseyapp.noise.ScaleBias;
 import ca.chrislittle.noiseyapp.noise.ScaleInput;
+import ca.chrislittle.noiseyapp.noise.Translate;
+import ca.chrislittle.noiseyapp.noise.Turbulence;
 
 public class NoiseyApp {
 
@@ -40,7 +44,7 @@ public class NoiseyApp {
 		
 		// Create a texture
 		texture = new Texture(512,512);
-		generatePlasmaTexture(texture);
+		//generatePlasmaTexture(texture);
 		//generateCloudTexture(texture);
 		//generateMarbleTexture(texture);
 		
@@ -49,6 +53,7 @@ public class NoiseyApp {
 
 		//generateWoodTexture(texture);
 		//generateWood2Texture(texture);
+		generateWood3Texture(texture);
 		
 		
 		// Send texture to display
@@ -390,6 +395,73 @@ public class NoiseyApp {
 //		colorMap.addColor(0.75f, new Color(0x7D4A2D));
 //		colorMap.addColor(0.9f, new Color(0x482014));
 
+		
+		float noise;
+		for (int y=0; y<tex.height; ++y) {
+			for (int x=0; x<tex.width; ++x) {
+				noise = map.getNoise(x, y);
+				
+				noise += 1.0f;
+				noise *= 0.5f;
+				
+				// Apply the colour value
+				tex.pixels[y*tex.width + x] = colorMap.getColor(noise).getRGB();
+			}
+		}
+	}
+	
+
+	public void generateWood3Texture(Texture tex) {
+		// The "rings" of the wood log
+		Cylinders baseWood = new Cylinders();
+		baseWood.setFrequency(12.0f);
+
+		// Perturb the ring pattern
+		Turbulence perturbedWood = new Turbulence(baseWood);
+		perturbedWood.setBaseAmplitude(0.03f);
+		perturbedWood.setBaseFrequency(2.0f);
+		perturbedWood.setOctaves(4);
+
+		// Fractal noise for finer details
+		BrownianNoise woodGrain = new BrownianNoise(new PerlinNoise());
+		woodGrain.setOctaves(2);
+		woodGrain.setBaseFrequency(32.0f);
+		
+		// Vertically stretch finer noise pattern
+		ScaleInput stretchedWoodGrain = new ScaleInput(woodGrain);
+		stretchedWoodGrain.setScaleX(16.0f);
+		
+		// Scale down the effect of the finer grains
+		ScaleBias scaledWoodGrain = new ScaleBias(stretchedWoodGrain);
+		scaledWoodGrain.setScale(0.5f);
+		
+		// Combine rings and fine grain detail
+		Add combinedWood = new Add(perturbedWood, scaledWoodGrain);
+		
+		// Translate slightly outward from the centre of the log
+		Translate translatedWood = new Translate(combinedWood);
+		translatedWood.translateZ(-0.1f);
+		
+		// Sample the log at an angle
+		Rotate rotatedWood = new Rotate(translatedWood);
+		rotatedWood.setAngles(7.0f, 0.0f, 0.0f);
+		
+		// One last bit of turbulence
+		Turbulence finalWood = new Turbulence(rotatedWood);
+		finalWood.setBaseFrequency(2.0f);
+		finalWood.setBaseAmplitude(0.015f);
+		finalWood.setOctaves(4);
+		
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, finalWood);
+		map.build();
+		map.remap();
+		
+		
+		ColorMap colorMap = new ColorMap();
+		colorMap.addColor(0.15f, new Color(0x281409)); // Dark
+		colorMap.addColor(1.0f, new Color(0x672C08)); // Light
+		
 		
 		float noise;
 		for (int y=0; y<tex.height; ++y) {
