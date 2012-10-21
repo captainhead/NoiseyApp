@@ -3,7 +3,7 @@ package ca.chrislittle.noiseyapp;
 import java.awt.Color;
 import java.util.LinkedList;
 
-public class ColorMap {
+public class ColorGradient {
 	
 	/**
 	 * Container for an entry into the color map. Contains a color map
@@ -27,7 +27,7 @@ public class ColorMap {
 	private LinkedList<ColorMapEntry> map;
 	
 	
-	public ColorMap() {
+	public ColorGradient() {
 		map = new LinkedList<ColorMapEntry>();
 	}
 	
