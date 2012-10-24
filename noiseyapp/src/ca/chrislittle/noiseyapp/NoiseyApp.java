@@ -45,7 +45,7 @@ public class NoiseyApp {
 		// Create a texture
 		texture = new Texture(512,512);
 		//generatePlasmaTexture(texture);
-		generateCloudTexture(texture);
+		//generateCloudTexture(texture);
 		//generateMarbleTexture(texture);
 		
 		//generateLickingFlameTexture(texture);
@@ -55,7 +55,7 @@ public class NoiseyApp {
 		//generateWood2Texture(texture);
 		//generateWood3Texture(texture);
 		
-		//generateLandmass(texture);
+		generateLandmass(texture);
 		
 		
 		// Send texture to display
@@ -516,12 +516,13 @@ public class NoiseyApp {
 		
 		
 		ColorGradient colorMap = new ColorGradient();
-		colorMap.addColor(0.15f, new Color(0x0C49FF)); // Deep water
-		colorMap.addColor(0.35f, new Color(0x42C6FF)); // Shallow water
-		colorMap.addColor(0.45f, new Color(0xFFD07F)); // Sand
-		colorMap.addColor(0.53f, new Color(0x00AD00)); // Grass
-		colorMap.addColor(0.65f, new Color(0x00AD00)); // Grass
-		colorMap.addColor(0.85f, new Color(0x888888)); // Rock
+		colorMap.addColor(0.08f, new Color(0x0C49FF)); // Deep water
+		colorMap.addColor(0.25f, new Color(0x42C6FF)); // Shallow water
+		colorMap.addColor(0.37f, new Color(0xFFD07F)); // Sand
+		colorMap.addColor(0.48f, new Color(0x00AD00)); // Grass
+		colorMap.addColor(0.7f, new Color(0x00AD00)); // Grass
+		colorMap.addColor(0.83f, new Color(0x888888)); // Rock
+		colorMap.addColor(0.9f, new Color(0x888888)); // Rock
 		colorMap.addColor(1.0f, new Color(0xEEEEEE)); // Snow
 		
 		
