@@ -36,9 +36,9 @@ public class NoiseyApp {
 		contentPanel.add(canvas, BorderLayout.CENTER);
 		window.setContentPane(contentPanel);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.pack();
 		window.setResizable(false);
 		window.setVisible(true);
-		window.pack();
 		window.setLocation(100, 10);
 		
 		
