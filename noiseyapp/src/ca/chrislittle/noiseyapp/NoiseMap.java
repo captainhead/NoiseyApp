@@ -1,4 +1,6 @@
-package ca.chrislittle.noiseyapp.noise;
+package ca.chrislittle.noiseyapp;
+
+import ca.chrislittle.noiseyapp.noise.NoiseSource;
 
 public class NoiseMap {
 	

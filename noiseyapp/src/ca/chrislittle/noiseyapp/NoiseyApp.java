@@ -2,6 +2,7 @@ package ca.chrislittle.noiseyapp;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -10,7 +11,6 @@ import ca.chrislittle.noiseyapp.noise.Absolute;
 import ca.chrislittle.noiseyapp.noise.Add;
 import ca.chrislittle.noiseyapp.noise.BrownianNoise;
 import ca.chrislittle.noiseyapp.noise.Cylinders;
-import ca.chrislittle.noiseyapp.noise.NoiseMap;
 import ca.chrislittle.noiseyapp.noise.PerlinNoise;
 import ca.chrislittle.noiseyapp.noise.Rotate;
 import ca.chrislittle.noiseyapp.noise.ScaleBias;
@@ -53,7 +53,9 @@ public class NoiseyApp {
 
 		//generateWoodTexture(texture);
 		//generateWood2Texture(texture);
-		generateWood3Texture(texture);
+		//generateWood3Texture(texture);
+		
+		generateLandmass(texture);
 		
 		
 		// Send texture to display
@@ -74,7 +76,7 @@ public class NoiseyApp {
 		map.build();
 		map.remap();
 		
-		ColorMap colorMap = new ColorMap();
+		ColorGradient colorMap = new ColorGradient();
 		colorMap.addColor(0.0f, new Color(0x000000));
 		colorMap.addColor(1.0f, new Color(0xEE44FF));
 //		colorMap.addColor(0.0f,  new Color(0x000000));
@@ -110,18 +112,21 @@ public class NoiseyApp {
 	public void generateCloudTexture(Texture tex) {
 		float density = 0.6f; // Cloud density
 		float sharpness = 0.013f; // Hardness of cloud edges (lower value -> sharper edges)
-
-		PerlinNoise noiseMaker = new PerlinNoise();
 		
-		BrownianNoise bNoiseMaker = new BrownianNoise(noiseMaker);
+		BrownianNoise bNoiseMaker = new BrownianNoise(new PerlinNoise());
 		bNoiseMaker.setOctaves(10);
 		bNoiseMaker.setBaseFrequency(2.0f);
 		
-		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
+		// Randomly move the noise sampling location to reduce artifacts caused by sampling around (0,0,0)
+		Random rand = new Random();
+		Translate translatedNoise = new Translate(bNoiseMaker);
+		translatedNoise.translate(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, translatedNoise);
 		map.build();
 		map.remap();
 		
-		ColorMap colorMap = new ColorMap();
+		ColorGradient colorMap = new ColorGradient();
 		colorMap.addColor(0.0f, new Color(0x007FFF));
 		colorMap.addColor(1.0f, new Color(0xFFFFFF));
 		
@@ -164,7 +169,7 @@ public class NoiseyApp {
 		map.build();
 		map.remap();
 		
-		ColorMap colorMap = new ColorMap();
+		ColorGradient colorMap = new ColorGradient();
 		colorMap.addColor(0.0f, new Color(0x225533));
 		colorMap.addColor(1.0f, new Color(0xF8FFF8));
 
@@ -197,7 +202,7 @@ public class NoiseyApp {
 		map.build();
 		map.remap();
 		
-		ColorMap colorMap = new ColorMap();
+		ColorGradient colorMap = new ColorGradient();
 		colorMap.addColor(0.0f, new Color(0x990000));
 		colorMap.addColor(0.2f, new Color(0xFF0000));
 		colorMap.addColor(0.6f, new Color(0xFFFF00));
@@ -227,7 +232,7 @@ public class NoiseyApp {
 		map.build();
 		map.remap();
 		
-		ColorMap colorMap = new ColorMap();
+		ColorGradient colorMap = new ColorGradient();
 		colorMap.addColor(0.5f, new Color(0x000000));
 		colorMap.addColor(0.94f, new Color(0x0000FF));
 		colorMap.addColor(1.0f, new Color(0xFFFFFF));
@@ -267,7 +272,7 @@ public class NoiseyApp {
 		
 		PerlinNoise noiseMaker = new PerlinNoise();
 		
-		ColorMap colorMap = new ColorMap();
+		ColorGradient colorMap = new ColorGradient();
 		colorMap.addColor(0.0f, new Color(0x472207)); // Dark
 		colorMap.addColor(1.0f, new Color(0xA55015)); // Light
 
@@ -357,7 +362,7 @@ public class NoiseyApp {
 		map.remap();
 		
 		
-		ColorMap colorMap = new ColorMap();
+		ColorGradient colorMap = new ColorGradient();
 //		colorMap.addColor(0.0f, new Color(0x000000));
 //		colorMap.addColor(1.0f, new Color(0xFFFFFF));
 		
@@ -458,7 +463,7 @@ public class NoiseyApp {
 		map.remap();
 		
 		
-		ColorMap colorMap = new ColorMap();
+		ColorGradient colorMap = new ColorGradient();
 		colorMap.addColor(0.15f, new Color(0x281409)); // Dark
 		colorMap.addColor(1.0f, new Color(0x672C08)); // Light
 		
@@ -473,6 +478,81 @@ public class NoiseyApp {
 				
 				// Apply the colour value
 				tex.pixels[y*tex.width + x] = colorMap.getColor(noise).getRGB();
+			}
+		}
+	}
+	
+
+	public void generateLandmass(Texture tex) {
+		// Generate overall landmass pattern
+		BrownianNoise landmassNoise = new BrownianNoise(new PerlinNoise());
+		landmassNoise.setBaseFrequency(4.0f);
+		landmassNoise.setOctaves(8);
+		
+		Translate modifiedLandmass = new Translate(landmassNoise);
+		modifiedLandmass.translate(12.7f, 14.2f, 17.8f);
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, modifiedLandmass);
+		map.build();
+		map.remap();
+		
+		// Generate landmass colour variance pattern
+		BrownianNoise varianceNoise = new BrownianNoise(new PerlinNoise());
+		varianceNoise.setBaseFrequency(32.0f);
+		varianceNoise.setOctaves(16);
+		
+		ScaleBias scaledVarianceNoise = new ScaleBias(varianceNoise);
+		scaledVarianceNoise.setScale(0.085f);
+		
+//		BrownianNoise fineVarianceNoise = new BrownianNoise(new PerlinNoise());
+//		fineVarianceNoise.setBaseFrequency(64.0f);
+//		fineVarianceNoise.setOctaves(8);
+//		
+//		ScaleBias fineScaledVarianceNoise = new ScaleBias(fineVarianceNoise);
+//		fineScaledVarianceNoise.setScale(0.05f);
+		
+		NoiseMap varianceMap = new NoiseMap(tex.width, tex.height, scaledVarianceNoise);
+		varianceMap.build();
+		
+		
+		ColorGradient colorMap = new ColorGradient();
+		colorMap.addColor(0.08f, new Color(0x0C49FF)); // Deep water
+		colorMap.addColor(0.25f, new Color(0x42C6FF)); // Shallow water
+		colorMap.addColor(0.37f, new Color(0xFFD07F)); // Sand
+		colorMap.addColor(0.48f, new Color(0x00AD00)); // Grass
+		colorMap.addColor(0.7f, new Color(0x00AD00)); // Grass
+		colorMap.addColor(0.83f, new Color(0x888888)); // Rock
+		colorMap.addColor(0.9f, new Color(0x888888)); // Rock
+		colorMap.addColor(1.0f, new Color(0xEEEEEE)); // Snow
+		
+		
+		float noise;
+		float variance;
+		Color mappedColor;
+		float[] colorComponents;
+		Color finalColor;
+		for (int y=0; y<tex.height; ++y) {
+			for (int x=0; x<tex.width; ++x) {
+				noise = map.getNoise(x, y);
+				variance = 1.0f + varianceMap.getNoise(x, y);
+				
+				noise += 1.0f;
+				noise *= 0.5f;
+				
+				mappedColor = colorMap.getColor(noise);
+				colorComponents = mappedColor.getComponents(null);
+				for (int i=0; i<colorComponents.length; ++i) {
+					colorComponents[i] *= variance;
+					if (colorComponents[i] > 1.0f)
+						colorComponents[i] = 1.0f;
+					if (colorComponents[i] < 0.0f)
+						colorComponents[i] = 0.0f;
+				}
+				finalColor = new Color(colorComponents[0],colorComponents[1],colorComponents[2]);
+				
+				
+				// Apply the colour value
+				tex.pixels[y*tex.width + x] = finalColor.getRGB();
 			}
 		}
 	}
