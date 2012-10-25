@@ -1,36 +1,18 @@
 package ca.chrislittle.noiseyapp;
 
 import java.awt.Color;
+import java.awt.GradientPaint;
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class ColorGradient {
 	
-	/**
-	 * Container for an entry into the color map. Contains a color map
-	 * (gradient spectrum) position and associated colour.
-	 * 
-	 * @author Chris
-	 *
-	 */
-	public class ColorMapEntry {
-		public float lowerBound; // Starting position in gradient spectrum, between [0.0, 1.0]
-		public Color color;
-		
-		public ColorMapEntry(float lower_bound, Color color) {
-			this.lowerBound = lower_bound;
-			this.color = color;
-		}
-	}
-	
-	
-	
-	private LinkedList<ColorMapEntry> map;
+	private LinkedList<ColorGradientEntry> map;
 	
 	
 	public ColorGradient() {
-		map = new LinkedList<ColorMapEntry>();
+		map = new LinkedList<ColorGradientEntry>();
 	}
-	
 	
 	/**
 	 * Add a colour entry to the colour map
@@ -43,7 +25,7 @@ public class ColorGradient {
 			// Ignore the entry if the position is out of bounds
 			return;
 		
-		ColorMapEntry entry = new ColorMapEntry(position, color);
+		ColorGradientEntry entry = new ColorGradientEntry(position, color);
 
 		// Add the element immediately if the colour map is empty
 		if (map.size() == 0) {
@@ -83,8 +65,8 @@ public class ColorGradient {
 		else if (map.size() == 1 || map.getFirst().lowerBound >= position)
 			return map.getFirst().color;
 		
-		ColorMapEntry entry = null;
-		ColorMapEntry entry2 = null;
+		ColorGradientEntry entry = null;
+		ColorGradientEntry entry2 = null;
 
 		// Find the colour map range for the requested position
 		for (int i=0; i<map.size(); ++i) {
@@ -118,4 +100,12 @@ public class ColorGradient {
 		
 		return new Color(color[0], color[1], color[2]);
 	}
+	
+	
+	public ColorGradientEntry[] getGradientPoints() {
+		ColorGradientEntry[] arr = new ColorGradientEntry[map.size()];
+		map.toArray(arr);
+		return arr;
+	}
+	
 }

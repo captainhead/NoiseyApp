@@ -22,8 +22,10 @@ public class NoiseyApp {
 
 	public JFrame window;
 	public TextureCanvas canvas;
+	public ColorGradientEditorPanel gradientEditorPanel;
 	
 	public Texture texture;
+	public ColorGradient colorGradient;
 	
 	
 	public NoiseyApp() {
@@ -32,8 +34,10 @@ public class NoiseyApp {
 		
 		JPanel contentPanel = new JPanel(new BorderLayout());
 		canvas = new TextureCanvas();
+		gradientEditorPanel = new ColorGradientEditorPanel();
 		
 		contentPanel.add(canvas, BorderLayout.CENTER);
+		contentPanel.add(gradientEditorPanel, BorderLayout.SOUTH);
 		window.setContentPane(contentPanel);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.pack();
@@ -44,23 +48,25 @@ public class NoiseyApp {
 		
 		// Create a texture
 		texture = new Texture(512,512);
-		//generatePlasmaTexture(texture);
-		//generateCloudTexture(texture);
-		//generateMarbleTexture(texture);
+		colorGradient = new ColorGradient();
+//		generatePlasmaTexture(texture);
+//		generateCloudTexture(texture);
+//		generateMarbleTexture(texture);
 		
-		//generateLickingFlameTexture(texture);
-		//generateLightningTexture(texture);
+//		generateLickingFlameTexture(texture);
+//		generateLightningTexture(texture);
 
-		//generateWoodTexture(texture);
-		//generateWood2Texture(texture);
-		//generateWood3Texture(texture);
+//		generateWoodTexture(texture);
+//		generateWood2Texture(texture);
+//		generateWood3Texture(texture);
 		
 		generateLandmass(texture);
-		
 		
 		// Send texture to display
 		canvas.setImage(texture);
 		canvas.repaint();
+		gradientEditorPanel.setColorGradient(colorGradient);
+		gradientEditorPanel.repaint();
 	}
 	
 	
@@ -76,24 +82,23 @@ public class NoiseyApp {
 		map.build();
 		map.remap();
 		
-		ColorGradient colorMap = new ColorGradient();
-		colorMap.addColor(0.0f, new Color(0x000000));
-		colorMap.addColor(1.0f, new Color(0xEE44FF));
-//		colorMap.addColor(0.0f,  new Color(0x000000));
-//		colorMap.addColor(0.143f, new Color(0x0000FF));
-//		colorMap.addColor(0.286f, new Color(0xFF00FF));
-//		colorMap.addColor(0.429f, new Color(0xFF0000));
-//		colorMap.addColor(0.571f, new Color(0xFFFF00));
-//		colorMap.addColor(0.714f, new Color(0x00FF00));
-//		colorMap.addColor(0.857f, new Color(0x00FFFF));
-//		colorMap.addColor(1.0f,  new Color(0xFFFFFF));
-//		colorMap.addColor(0.2f, new Color(0x000000));
-//		colorMap.addColor(0.3f, new Color(0x0000FF));
-//		colorMap.addColor(0.4f, new Color(0x00FFFF));
-//		colorMap.addColor(0.5f, new Color(0x00FF00));
-//		colorMap.addColor(0.6f, new Color(0xFFFF00));
-//		colorMap.addColor(0.7f, new Color(0xFF0000));
-//		colorMap.addColor(0.8f, new Color(0xFFFFFF));
+		colorGradient.addColor(0.0f, new Color(0x000000));
+		colorGradient.addColor(1.0f, new Color(0xEE44FF));
+//		colorGradient.addColor(0.0f,  new Color(0x000000));
+//		colorGradient.addColor(0.143f, new Color(0x0000FF));
+//		colorGradient.addColor(0.286f, new Color(0xFF00FF));
+//		colorGradient.addColor(0.429f, new Color(0xFF0000));
+//		colorGradient.addColor(0.571f, new Color(0xFFFF00));
+//		colorGradient.addColor(0.714f, new Color(0x00FF00));
+//		colorGradient.addColor(0.857f, new Color(0x00FFFF));
+//		colorGradient.addColor(1.0f,  new Color(0xFFFFFF));
+//		colorGradient.addColor(0.2f, new Color(0x000000));
+//		colorGradient.addColor(0.3f, new Color(0x0000FF));
+//		colorGradient.addColor(0.4f, new Color(0x00FFFF));
+//		colorGradient.addColor(0.5f, new Color(0x00FF00));
+//		colorGradient.addColor(0.6f, new Color(0xFFFF00));
+//		colorGradient.addColor(0.7f, new Color(0xFF0000));
+//		colorGradient.addColor(0.8f, new Color(0xFFFFFF));
 
 		float noise;
 		for (int y=0; y<tex.height; ++y) {
@@ -104,7 +109,7 @@ public class NoiseyApp {
 				noise *= 0.5f;
 				
 				// Apply the colour value
-				tex.pixels[y*tex.width + x] = colorMap.getColor(noise).getRGB();
+				tex.pixels[y*tex.width + x] = colorGradient.getColor(noise).getRGB();
 			}
 		}
 	}
@@ -126,9 +131,8 @@ public class NoiseyApp {
 		map.build();
 		map.remap();
 		
-		ColorGradient colorMap = new ColorGradient();
-		colorMap.addColor(0.0f, new Color(0x007FFF));
-		colorMap.addColor(1.0f, new Color(0xFFFFFF));
+		colorGradient.addColor(0.0f, new Color(0x007FFF));
+		colorGradient.addColor(1.0f, new Color(0xFFFFFF));
 		
 		
 
@@ -149,7 +153,7 @@ public class NoiseyApp {
 				c = 1.0f - c;
 
 				// Apply the colour value
-				tex.pixels[y*tex.width + x] = colorMap.getColor(c).getRGB();
+				tex.pixels[y*tex.width + x] = colorGradient.getColor(c).getRGB();
 			}
 		}
 	}
@@ -169,9 +173,8 @@ public class NoiseyApp {
 		map.build();
 		map.remap();
 		
-		ColorGradient colorMap = new ColorGradient();
-		colorMap.addColor(0.0f, new Color(0x225533));
-		colorMap.addColor(1.0f, new Color(0xF8FFF8));
+		colorGradient.addColor(0.0f, new Color(0x225533));
+		colorGradient.addColor(1.0f, new Color(0xF8FFF8));
 
 		float noise;
 		for (int y=0; y<tex.height; ++y) {
@@ -184,7 +187,7 @@ public class NoiseyApp {
 				noise *= 0.5f;
 				
 				// Apply the colour value
-				tex.pixels[y*tex.width + x] = colorMap.getColor(noise).getRGB();
+				tex.pixels[y*tex.width + x] = colorGradient.getColor(noise).getRGB();
 			}
 		}
 	}
@@ -202,11 +205,10 @@ public class NoiseyApp {
 		map.build();
 		map.remap();
 		
-		ColorGradient colorMap = new ColorGradient();
-		colorMap.addColor(0.0f, new Color(0x990000));
-		colorMap.addColor(0.2f, new Color(0xFF0000));
-		colorMap.addColor(0.6f, new Color(0xFFFF00));
-		colorMap.addColor(1.0f, new Color(0xFFFFFF));
+		colorGradient.addColor(0.0f, new Color(0x990000));
+		colorGradient.addColor(0.2f, new Color(0xFF0000));
+		colorGradient.addColor(0.6f, new Color(0xFFFF00));
+		colorGradient.addColor(1.0f, new Color(0xFFFFFF));
 		
 		float noise;
 		for (int y=0; y<tex.height; ++y) {
@@ -216,7 +218,7 @@ public class NoiseyApp {
 				noise = Math.abs(noise);
 				
 				// Apply the colour value
-				tex.pixels[y*tex.width + x] = colorMap.getColor(noise).getRGB();
+				tex.pixels[y*tex.width + x] = colorGradient.getColor(noise).getRGB();
 			}
 		}
 	}
@@ -232,10 +234,9 @@ public class NoiseyApp {
 		map.build();
 		map.remap();
 		
-		ColorGradient colorMap = new ColorGradient();
-		colorMap.addColor(0.5f, new Color(0x000000));
-		colorMap.addColor(0.94f, new Color(0x0000FF));
-		colorMap.addColor(1.0f, new Color(0xFFFFFF));
+		colorGradient.addColor(0.5f, new Color(0x000000));
+		colorGradient.addColor(0.94f, new Color(0x0000FF));
+		colorGradient.addColor(1.0f, new Color(0xFFFFFF));
 
 		float noise;
 		for (int y=0; y<tex.height; ++y) {
@@ -245,7 +246,7 @@ public class NoiseyApp {
 				noise = 1.0f - Math.abs(noise);
 				
 				// Apply the colour value
-				tex.pixels[y*tex.width + x] = colorMap.getColor(noise).getRGB();
+				tex.pixels[y*tex.width + x] = colorGradient.getColor(noise).getRGB();
 			}
 		}
 	}
@@ -272,9 +273,8 @@ public class NoiseyApp {
 		
 		PerlinNoise noiseMaker = new PerlinNoise();
 		
-		ColorGradient colorMap = new ColorGradient();
-		colorMap.addColor(0.0f, new Color(0x472207)); // Dark
-		colorMap.addColor(1.0f, new Color(0xA55015)); // Light
+		colorGradient.addColor(0.0f, new Color(0x472207)); // Dark
+		colorGradient.addColor(1.0f, new Color(0xA55015)); // Light
 
 		for (int y=0; y<tex.height; ++y) {
 			for (int x=0; x<tex.width; ++x) {
@@ -324,7 +324,7 @@ public class NoiseyApp {
 				
 
 				// Apply the colour value
-				Color result = colorMap.getColor(noise);
+				Color result = colorGradient.getColor(noise);
 				tex.pixels[y*tex.width + x] = result.getRGB();
 			}
 		}
@@ -362,43 +362,42 @@ public class NoiseyApp {
 		map.remap();
 		
 		
-		ColorGradient colorMap = new ColorGradient();
-//		colorMap.addColor(0.0f, new Color(0x000000));
-//		colorMap.addColor(1.0f, new Color(0xFFFFFF));
+//		colorGradient.addColor(0.0f, new Color(0x000000));
+//		colorGradient.addColor(1.0f, new Color(0xFFFFFF));
+//		
+//		colorGradient.addColor(0.0f, new Color(0x472207)); // Dark
+//		colorGradient.addColor(1.0f, new Color(0xA55015)); // Light
 		
-//		colorMap.addColor(0.0f, new Color(0x472207)); // Dark
-//		colorMap.addColor(1.0f, new Color(0xA55015)); // Light
-		
-		colorMap.addColor(0.0f, new Color(0x3A1D0D)); // Dark (top)
-		colorMap.addColor(0.17f, new Color(0x532913));
-		colorMap.addColor(0.3f, new Color(0x75462A));
-		colorMap.addColor(0.375f, new Color(0x7B4C30));
-		colorMap.addColor(0.5f, new Color(0x7B4C30));
-		colorMap.addColor(0.6f, new Color(0x200900));
-		colorMap.addColor(0.625f, new Color(0x79462B));
-		colorMap.addColor(0.7f, new Color(0x79462B));
-		colorMap.addColor(0.81f, new Color(0x4A260E));
-		colorMap.addColor(1.0f, new Color(0x6C3E26)); // Light (bottom)
+		colorGradient.addColor(0.0f, new Color(0x3A1D0D)); // Dark (top)
+		colorGradient.addColor(0.17f, new Color(0x532913));
+		colorGradient.addColor(0.3f, new Color(0x75462A));
+		colorGradient.addColor(0.375f, new Color(0x7B4C30));
+		colorGradient.addColor(0.5f, new Color(0x7B4C30));
+		colorGradient.addColor(0.6f, new Color(0x200900));
+		colorGradient.addColor(0.625f, new Color(0x79462B));
+		colorGradient.addColor(0.7f, new Color(0x79462B));
+		colorGradient.addColor(0.81f, new Color(0x4A260E));
+		colorGradient.addColor(1.0f, new Color(0x6C3E26)); // Light (bottom)
 
-//		colorMap.addColor(0.0f, new Color(0x3A1D0D)); // Dark (top)
-//		colorMap.addColor(0.33f, new Color(0x532913));
-//		colorMap.addColor(0.4f, new Color(0x75462A));
-//		colorMap.addColor(0.4375f, new Color(0x7B4C30));
-//		colorMap.addColor(0.5f, new Color(0x7B4C30));
-//		colorMap.addColor(0.55f, new Color(0x200900));
-//		colorMap.addColor(0.5625f, new Color(0x79462B));
-//		colorMap.addColor(0.6f, new Color(0x79462B));
-//		colorMap.addColor(0.66f, new Color(0x4A260E));
-//		colorMap.addColor(1.0f, new Color(0x6C3E26)); // Light (bottom)
-		
-//		colorMap.addColor(0.05f, new Color(0x6D3F27));
-//		colorMap.addColor(0.2f, new Color(0x4A260E));
-//		colorMap.addColor(0.3f, new Color(0x864F30));
-//		colorMap.addColor(0.4f, new Color(0x864F30));
-//		colorMap.addColor(0.5f, new Color(0x200C03));
-//		colorMap.addColor(0.6f, new Color(0x7D4A2D));
-//		colorMap.addColor(0.75f, new Color(0x7D4A2D));
-//		colorMap.addColor(0.9f, new Color(0x482014));
+//		colorGradient.addColor(0.0f, new Color(0x3A1D0D)); // Dark (top)
+//		colorGradient.addColor(0.33f, new Color(0x532913));
+//		colorGradient.addColor(0.4f, new Color(0x75462A));
+//		colorGradient.addColor(0.4375f, new Color(0x7B4C30));
+//		colorGradient.addColor(0.5f, new Color(0x7B4C30));
+//		colorGradient.addColor(0.55f, new Color(0x200900));
+//		colorGradient.addColor(0.5625f, new Color(0x79462B));
+//		colorGradient.addColor(0.6f, new Color(0x79462B));
+//		colorGradient.addColor(0.66f, new Color(0x4A260E));
+//		colorGradient.addColor(1.0f, new Color(0x6C3E26)); // Light (bottom)
+//		
+//		colorGradient.addColor(0.05f, new Color(0x6D3F27));
+//		colorGradient.addColor(0.2f, new Color(0x4A260E));
+//		colorGradient.addColor(0.3f, new Color(0x864F30));
+//		colorGradient.addColor(0.4f, new Color(0x864F30));
+//		colorGradient.addColor(0.5f, new Color(0x200C03));
+//		colorGradient.addColor(0.6f, new Color(0x7D4A2D));
+//		colorGradient.addColor(0.75f, new Color(0x7D4A2D));
+//		colorGradient.addColor(0.9f, new Color(0x482014));
 
 		
 		float noise;
@@ -410,7 +409,7 @@ public class NoiseyApp {
 				noise *= 0.5f;
 				
 				// Apply the colour value
-				tex.pixels[y*tex.width + x] = colorMap.getColor(noise).getRGB();
+				tex.pixels[y*tex.width + x] = colorGradient.getColor(noise).getRGB();
 			}
 		}
 	}
@@ -463,9 +462,8 @@ public class NoiseyApp {
 		map.remap();
 		
 		
-		ColorGradient colorMap = new ColorGradient();
-		colorMap.addColor(0.15f, new Color(0x281409)); // Dark
-		colorMap.addColor(1.0f, new Color(0x672C08)); // Light
+		colorGradient.addColor(0.15f, new Color(0x281409)); // Dark
+		colorGradient.addColor(1.0f, new Color(0x672C08)); // Light
 		
 		
 		float noise;
@@ -477,7 +475,7 @@ public class NoiseyApp {
 				noise *= 0.5f;
 				
 				// Apply the colour value
-				tex.pixels[y*tex.width + x] = colorMap.getColor(noise).getRGB();
+				tex.pixels[y*tex.width + x] = colorGradient.getColor(noise).getRGB();
 			}
 		}
 	}
@@ -515,15 +513,14 @@ public class NoiseyApp {
 		varianceMap.build();
 		
 		
-		ColorGradient colorMap = new ColorGradient();
-		colorMap.addColor(0.08f, new Color(0x0C49FF)); // Deep water
-		colorMap.addColor(0.25f, new Color(0x42C6FF)); // Shallow water
-		colorMap.addColor(0.37f, new Color(0xFFD07F)); // Sand
-		colorMap.addColor(0.48f, new Color(0x00AD00)); // Grass
-		colorMap.addColor(0.7f, new Color(0x00AD00)); // Grass
-		colorMap.addColor(0.83f, new Color(0x888888)); // Rock
-		colorMap.addColor(0.9f, new Color(0x888888)); // Rock
-		colorMap.addColor(1.0f, new Color(0xEEEEEE)); // Snow
+		colorGradient.addColor(0.08f, new Color(0x0C49FF)); // Deep water
+		colorGradient.addColor(0.27f, new Color(0x42C6FF)); // Shallow water
+		colorGradient.addColor(0.37f, new Color(0xFFD07F)); // Sand
+		colorGradient.addColor(0.48f, new Color(0x00AD00)); // Grass
+		colorGradient.addColor(0.7f, new Color(0x00AD00)); // Grass
+		colorGradient.addColor(0.83f, new Color(0x888888)); // Rock
+		colorGradient.addColor(0.9f, new Color(0x888888)); // Rock
+		colorGradient.addColor(0.95f, new Color(0xEEEEEE)); // Snow
 		
 		
 		float noise;
@@ -539,7 +536,7 @@ public class NoiseyApp {
 				noise += 1.0f;
 				noise *= 0.5f;
 				
-				mappedColor = colorMap.getColor(noise);
+				mappedColor = colorGradient.getColor(noise);
 				colorComponents = mappedColor.getComponents(null);
 				for (int i=0; i<colorComponents.length; ++i) {
 					colorComponents[i] *= variance;
