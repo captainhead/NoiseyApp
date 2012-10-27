@@ -49,24 +49,20 @@ public class ColorGradientEditorPanel extends JPanel {
 			e1 = gradArray[i];
 			if (i == gradArray.length-1) {
 				e2 = gradArray[i];
-				p1 = e1.lowerBound*width;
+				p1 = e1.getGradPoint()*width;
 				p2 = width;
 			}
 			else {
 				e2 = gradArray[i+1];
-				p1 = e1.lowerBound*width;
-				p2 = e2.lowerBound*width;
+				p1 = e1.getGradPoint()*width;
+				p2 = e2.getGradPoint()*width;
 			}
 			
-			GradientPaint gradientPaint = new GradientPaint(p1,0,e1.color, p2,0,e2.color);
+			GradientPaint gradientPaint = new GradientPaint(p1,0,e1.getColor(), p2,0,e2.getColor());
 			g2d.setPaint(gradientPaint);
 			g2d.fill(new Rectangle2D.Double(start, 0, p2-start, 24));
 			
 			start = p2;
 		}
-		
-//		GradientPaint gradientPaint = new GradientPaint(0, 0, new Color(0xFF0000), width, 0, new Color(0x0000FF));
-//		g2d.setPaint(gradientPaint);
-//		g2d.fill(new Rectangle2D.Double(0, 0, width, 24));
 	}
 }

@@ -36,7 +36,7 @@ public class ColorGradient {
 		// Find the position to add the colour entry to the map
 		boolean entryAdded = false;
 		for(int i=0; i<map.size(); ++i) {
-			if (map.get(i).lowerBound > position) {
+			if (map.get(i).getGradPoint() > position) {
 				map.add(i, entry);
 				entryAdded = true;
 				break;
@@ -62,8 +62,8 @@ public class ColorGradient {
 			return new Color(0xFFFFFF);
 		// Return the first colour if there is only one entry in the map, or
 		// the first entry has a position greater than the requested position
-		else if (map.size() == 1 || map.getFirst().lowerBound >= position)
-			return map.getFirst().color;
+		else if (map.size() == 1 || map.getFirst().getGradPoint() >= position)
+			return map.getFirst().getColor();
 		
 		ColorGradientEntry entry = null;
 		ColorGradientEntry entry2 = null;
@@ -72,15 +72,15 @@ public class ColorGradient {
 		for (int i=0; i<map.size(); ++i) {
 			entry = map.get(i);
 			
-			if (entry.lowerBound <= position) {
+			if (entry.getGradPoint() <= position) {
 				// Return the entry's colour if it is the last entry in the map
 				if (i == map.size()-1) {
-					return entry.color;
+					return entry.getColor();
 				}
 				// Otherwise retrieve the next entry in the colour map
 				else {
 					entry2 = map.get(i+1);
-					if (entry2.lowerBound >= position) {
+					if (entry2.getGradPoint() >= position) {
 						break;
 					}
 				}
@@ -88,12 +88,12 @@ public class ColorGradient {
 		}
 
 		// Interpolate colour between colour map entries
-		float t = (position - entry.lowerBound) / (entry2.lowerBound - entry.lowerBound);
+		float t = (position - entry.getGradPoint()) / (entry2.getGradPoint() - entry.getGradPoint());
 		float u = 1.0f - t;
 
 		float[] color = new float[3];
-		float[] c1 = entry.color.getComponents(null);
-		float[] c2 = entry2.color.getComponents(null);
+		float[] c1 = entry.getColor().getComponents(null);
+		float[] c2 = entry2.getColor().getComponents(null);
 		for (int i=0; i<3; ++i) {
 			color[i] = c1[i]*u + c2[i]*t;
 		}

@@ -43,13 +43,13 @@ public class NoiseyApp {
 		window.pack();
 		window.setResizable(false);
 		window.setVisible(true);
-		window.setLocation(100, 10);
+		window.setLocation(150, 150);
 		
 		
 		// Create a texture
 		texture = new Texture(512,512);
 		colorGradient = new ColorGradient();
-//		generatePlasmaTexture(texture);
+		generatePlasmaTexture(texture);
 //		generateCloudTexture(texture);
 //		generateMarbleTexture(texture);
 		
@@ -60,7 +60,7 @@ public class NoiseyApp {
 //		generateWood2Texture(texture);
 //		generateWood3Texture(texture);
 		
-		generateLandmass(texture);
+//		generateLandmass(texture);
 		
 		// Send texture to display
 		canvas.setImage(texture);
@@ -75,10 +75,14 @@ public class NoiseyApp {
 		PerlinNoise noiseMaker = new PerlinNoise();
 		
 		BrownianNoise bNoiseMaker = new BrownianNoise(noiseMaker);
-		bNoiseMaker.setOctaves(10);
+		bNoiseMaker.setOctaves(8);
 		bNoiseMaker.setBaseFrequency(2.0f);
 		
-		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
+		// Move away from "singularity" at 0,0,0
+		Translate transNoise = new Translate(bNoiseMaker);
+		transNoise.translate(25.1f, 13.2f, 56.7f);
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, transNoise);
 		map.build();
 		map.remap();
 		
@@ -418,7 +422,7 @@ public class NoiseyApp {
 	public void generateWood3Texture(Texture tex) {
 		// The "rings" of the wood log
 		Cylinders baseWood = new Cylinders();
-		baseWood.setFrequency(12.0f);
+		baseWood.setFrequency(10.0f);
 
 		// Perturb the ring pattern
 		Turbulence perturbedWood = new Turbulence(baseWood);
@@ -429,7 +433,7 @@ public class NoiseyApp {
 		// Fractal noise for finer details
 		BrownianNoise woodGrain = new BrownianNoise(new PerlinNoise());
 		woodGrain.setOctaves(2);
-		woodGrain.setBaseFrequency(32.0f);
+		woodGrain.setBaseFrequency(16.0f);
 		
 		// Vertically stretch finer noise pattern
 		ScaleInput stretchedWoodGrain = new ScaleInput(woodGrain);
@@ -441,9 +445,11 @@ public class NoiseyApp {
 		
 		// Combine rings and fine grain detail
 		Add combinedWood = new Add(perturbedWood, scaledWoodGrain);
-		
-		// Translate slightly outward from the centre of the log
+
+		// Translate further away from the 0,0,0 origin		
 		Translate translatedWood = new Translate(combinedWood);
+		translatedWood.translateY(15.2f);
+		// Translate slightly outward from the centre of the log
 		translatedWood.translateZ(-0.1f);
 		
 		// Sample the log at an angle
