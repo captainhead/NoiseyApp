@@ -1,6 +1,9 @@
 NoiseyApp
 =========
 
+It's quite like libNoise
+------------------------
+
 NoiseyApp is a procedural texture generation application implemented in Java. Random noise generation is based on Perlin noise and fractal Brownian motion. The overall structure of the source code (i.e. modular design) is heavily inspired by the C++ libnoise library.
 
 Several example routines have been slapped together, such as clouds, marble, electricity, and wood grain textures. Planned features include:
@@ -13,8 +16,6 @@ This project is meant primarily for experimentation and reaquainting myself with
 
 The Legalese
 ------------
-
-And here's the official part, because I should really get in the habit of looking after copyright, etc....
 
 Copyright (c) 2012, Christopher Little
 All rights reserved.
