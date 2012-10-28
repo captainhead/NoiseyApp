@@ -37,7 +37,7 @@ public class ColorGradientEditorPanel extends JPanel {
 		
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.setPaint(Color.black);
-		g2d.fillRect(0, 0, width, 24);
+		g2d.fillRect(0, 0, width, height);
 		
 		ColorGradientEntry[] gradArray = gradient.getGradientPoints();
 		
@@ -60,7 +60,7 @@ public class ColorGradientEditorPanel extends JPanel {
 			
 			GradientPaint gradientPaint = new GradientPaint(p1,0,e1.getColor(), p2,0,e2.getColor());
 			g2d.setPaint(gradientPaint);
-			g2d.fill(new Rectangle2D.Double(start, 0, p2-start, 24));
+			g2d.fill(new Rectangle2D.Double(start, 0, p2-start, height));
 			
 			start = p2;
 		}

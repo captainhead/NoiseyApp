@@ -1,9 +1,7 @@
 package ca.chrislittle.noiseyapp;
 
 import java.awt.Color;
-import java.awt.GradientPaint;
 import java.util.LinkedList;
-import java.util.ListIterator;
 
 public class ColorGradient {
 	

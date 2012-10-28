@@ -53,8 +53,8 @@ public class NoiseyApp {
 //		generateCloudTexture(texture);
 //		generateMarbleTexture(texture);
 		
-		generateLickingFlameTexture(texture);
-//		generateLightningTexture(texture);
+//		generateLickingFlameTexture(texture);
+		generateLightningTexture(texture);
 
 //		generateWoodTexture(texture);
 //		generateWood2Texture(texture);
