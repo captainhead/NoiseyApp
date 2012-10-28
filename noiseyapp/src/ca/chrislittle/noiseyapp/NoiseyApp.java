@@ -49,11 +49,11 @@ public class NoiseyApp {
 		// Create a texture
 		texture = new Texture(512,512);
 		colorGradient = new ColorGradient();
-		generatePlasmaTexture(texture);
+//		generatePlasmaTexture(texture);
 //		generateCloudTexture(texture);
 //		generateMarbleTexture(texture);
 		
-//		generateLickingFlameTexture(texture);
+		generateLickingFlameTexture(texture);
 //		generateLightningTexture(texture);
 
 //		generateWoodTexture(texture);
@@ -202,16 +202,20 @@ public class NoiseyApp {
 		Absolute absNoiseMaker = new Absolute(noiseMaker);
 
 		BrownianNoise bNoiseMaker = new BrownianNoise(absNoiseMaker);
-		bNoiseMaker.setOctaves(4);
+		bNoiseMaker.setOctaves(16);
 		bNoiseMaker.setBaseFrequency(2.0f);
 		
-		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
+		// Move away from "singularity" at 0,0,0
+		Translate transNoise = new Translate(bNoiseMaker);
+		transNoise.translate(25.1f, 13.2f, 56.7f);
+		
+		NoiseMap map = new NoiseMap(tex.width, tex.height, transNoise);
 		map.build();
 		map.remap();
 		
-		colorGradient.addColor(0.0f, new Color(0x990000));
+		colorGradient.addColor(0.0f, new Color(0xAA0000));
 		colorGradient.addColor(0.2f, new Color(0xFF0000));
-		colorGradient.addColor(0.6f, new Color(0xFFFF00));
+		colorGradient.addColor(0.8f, new Color(0xFFFF00));
 		colorGradient.addColor(1.0f, new Color(0xFFFFFF));
 		
 		float noise;
