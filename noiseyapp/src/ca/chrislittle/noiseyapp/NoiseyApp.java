@@ -2,7 +2,6 @@ package ca.chrislittle.noiseyapp;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -76,13 +75,9 @@ public class NoiseyApp {
 		
 		BrownianNoise bNoiseMaker = new BrownianNoise(noiseMaker);
 		bNoiseMaker.setOctaves(8);
-		bNoiseMaker.setBaseFrequency(2.0f);
 		
-		// Move away from "singularity" at 0,0,0
-		Translate transNoise = new Translate(bNoiseMaker);
-		transNoise.translate(25.1f, 13.2f, 56.7f);
-		
-		NoiseMap map = new NoiseMap(tex.width, tex.height, transNoise);
+		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
+		map.setArea(1.2f, 3.2f, 1.2f, 3.2f);
 		map.build();
 		map.remap();
 		
@@ -126,12 +121,8 @@ public class NoiseyApp {
 		bNoiseMaker.setOctaves(10);
 		bNoiseMaker.setBaseFrequency(2.0f);
 		
-		// Randomly move the noise sampling location to reduce artifacts caused by sampling around (0,0,0)
-		Random rand = new Random();
-		Translate translatedNoise = new Translate(bNoiseMaker);
-		translatedNoise.translate(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
-		
-		NoiseMap map = new NoiseMap(tex.width, tex.height, translatedNoise);
+		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
+		map.setArea(1.2f, 3.2f, 1.2f, 3.2f);
 		map.build();
 		map.remap();
 		
@@ -171,9 +162,9 @@ public class NoiseyApp {
 
 		BrownianNoise bNoiseMaker = new BrownianNoise(noiseMaker);
 		bNoiseMaker.setOctaves(10);
-		bNoiseMaker.setBaseFrequency(2.0f);
 		
 		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
+		map.setArea(1.2f, 3.2f, 1.2f, 3.2f);
 		map.build();
 		map.remap();
 		
@@ -203,13 +194,9 @@ public class NoiseyApp {
 
 		BrownianNoise bNoiseMaker = new BrownianNoise(absNoiseMaker);
 		bNoiseMaker.setOctaves(16);
-		bNoiseMaker.setBaseFrequency(2.0f);
 		
-		// Move away from "singularity" at 0,0,0
-		Translate transNoise = new Translate(bNoiseMaker);
-		transNoise.translate(25.1f, 13.2f, 56.7f);
-		
-		NoiseMap map = new NoiseMap(tex.width, tex.height, transNoise);
+		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
+		map.setArea(1.2f, 3.2f, 1.2f, 3.2f);
 		map.build();
 		map.remap();
 		
@@ -232,13 +219,11 @@ public class NoiseyApp {
 	}
 	
 	public void generateLightningTexture(Texture tex) {
-		PerlinNoise noiseMaker = new PerlinNoise();
-
-		BrownianNoise bNoiseMaker = new BrownianNoise(noiseMaker);
+		BrownianNoise bNoiseMaker = new BrownianNoise(new PerlinNoise());
 		bNoiseMaker.setOctaves(8);
-		bNoiseMaker.setBaseFrequency(4.0f);
 		
 		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
+		map.setArea(1.2f, 5.2f, 1.2f, 5.2f);
 		map.build();
 		map.remap();
 		
@@ -468,6 +453,7 @@ public class NoiseyApp {
 		
 		
 		NoiseMap map = new NoiseMap(tex.width, tex.height, finalWood);
+		map.setArea(-0.5f, 0.5f, -0.5f, 0.5f);
 		map.build();
 		map.remap();
 		
@@ -494,19 +480,16 @@ public class NoiseyApp {
 	public void generateLandmass(Texture tex) {
 		// Generate overall landmass pattern
 		BrownianNoise landmassNoise = new BrownianNoise(new PerlinNoise());
-		landmassNoise.setBaseFrequency(4.0f);
 		landmassNoise.setOctaves(8);
 		
-		Translate modifiedLandmass = new Translate(landmassNoise);
-		modifiedLandmass.translate(12.7f, 14.2f, 17.8f);
-		
-		NoiseMap map = new NoiseMap(tex.width, tex.height, modifiedLandmass);
+		NoiseMap map = new NoiseMap(tex.width, tex.height, landmassNoise);
+		map.setArea(1.2f, 5.2f, 1.2f, 5.2f);
 		map.build();
 		map.remap();
 		
+		
 		// Generate landmass colour variance pattern
 		BrownianNoise varianceNoise = new BrownianNoise(new PerlinNoise());
-		varianceNoise.setBaseFrequency(32.0f);
 		varianceNoise.setOctaves(16);
 		
 		ScaleBias scaledVarianceNoise = new ScaleBias(varianceNoise);
@@ -520,6 +503,7 @@ public class NoiseyApp {
 //		fineScaledVarianceNoise.setScale(0.05f);
 		
 		NoiseMap varianceMap = new NoiseMap(tex.width, tex.height, scaledVarianceNoise);
+		varianceMap.setArea(1.2f, 33.2f, 1.2f, 33.2f);
 		varianceMap.build();
 		
 		
@@ -546,6 +530,7 @@ public class NoiseyApp {
 				noise += 1.0f;
 				noise *= 0.5f;
 				
+				// Lighten/darken the colour based on the variance noise map
 				mappedColor = colorGradient.getColor(noise);
 				colorComponents = mappedColor.getComponents(null);
 				for (int i=0; i<colorComponents.length; ++i) {
