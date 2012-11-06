@@ -18,7 +18,7 @@ import ca.chrislittle.noiseyapp.noise.Translate;
 import ca.chrislittle.noiseyapp.noise.Turbulence;
 
 public class NoiseyApp {
-
+	
 	public JFrame window;
 	public TextureCanvas canvas;
 	public ColorGradientEditorPanel gradientEditorPanel;
@@ -39,10 +39,10 @@ public class NoiseyApp {
 		contentPanel.add(gradientEditorPanel, BorderLayout.SOUTH);
 		window.setContentPane(contentPanel);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.pack();
 		window.setResizable(false);
 		window.setVisible(true);
 		window.setLocation(150, 150);
+		window.pack();
 		
 		
 		// Create a texture

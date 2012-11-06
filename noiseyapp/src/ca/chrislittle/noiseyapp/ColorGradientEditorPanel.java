@@ -4,11 +4,12 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 
-public class ColorGradientEditorPanel extends JPanel {
+public class ColorGradientEditorPanel extends JPanel implements MouseMotionListener {
 	private static final long serialVersionUID = 4542584126816930581L;
 
 	private static final int width = 512;
@@ -19,6 +20,8 @@ public class ColorGradientEditorPanel extends JPanel {
 	
 	public ColorGradientEditorPanel() {
 		gradient = null;
+		
+		addMouseMotionListener(this);
 	}
 	
 	/**
@@ -60,9 +63,18 @@ public class ColorGradientEditorPanel extends JPanel {
 			
 			GradientPaint gradientPaint = new GradientPaint(p1,0,e1.getColor(), p2,0,e2.getColor());
 			g2d.setPaint(gradientPaint);
-			g2d.fill(new Rectangle2D.Double(start, 0, p2-start, height));
+			//g2d.fill(new Rectangle2D.Double(start, 0, p2-start, height));
 			
 			start = p2;
 		}
+	}
+	
+	
+	public void mouseMoved(MouseEvent e) {
+		System.out.println(e.getX());
+	}
+	
+	public void mouseDragged(MouseEvent e) {
+		
 	}
 }
