@@ -48,12 +48,12 @@ public class NoiseyApp {
 		// Create a texture
 		texture = new Texture(512,512);
 		colorGradient = new ColorGradient();
-//		generatePlasmaTexture(texture);
+		generatePlasmaTexture(texture);
 //		generateCloudTexture(texture);
 //		generateMarbleTexture(texture);
 		
 //		generateLickingFlameTexture(texture);
-		generateLightningTexture(texture);
+//		generateLightningTexture(texture);
 
 //		generateWoodTexture(texture);
 //		generateWood2Texture(texture);
