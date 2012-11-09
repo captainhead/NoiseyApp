@@ -46,9 +46,9 @@ public class NoiseyApp {
 		
 		
 		// Create a texture
-		texture = new Texture(512,512);
 		colorGradient = new ColorGradient();
-		generatePlasmaTexture(texture);
+//		texture = new Texture(512,512);
+//		generatePlasmaTexture(texture);
 //		generateCloudTexture(texture);
 //		generateMarbleTexture(texture);
 		
@@ -60,6 +60,8 @@ public class NoiseyApp {
 //		generateWood3Texture(texture);
 		
 //		generateLandmass(texture);
+
+		texture = generateTest();
 		
 		// Send texture to display
 		canvas.setImage(texture);
@@ -68,6 +70,22 @@ public class NoiseyApp {
 		gradientEditorPanel.repaint();
 	}
 	
+	
+	
+	public Texture generateTest() {
+		BrownianNoise bNoise = new BrownianNoise(new PerlinNoise());
+		bNoise.setOctaves(8);
+		
+		NoiseMap map = new NoiseMap(512, 512, bNoise);
+		map.setArea(1.0f, 7.0f, 1.0f, 7.0f);
+		map.build();
+		map.remapToRange(0.0f, 1.0f);
+
+		colorGradient.addColor(0.1f, new Color(0xFFFFFF));
+		colorGradient.addColor(0.8f, new Color(0xFF0000));
+		
+		return new Texture(map, colorGradient);
+	}
 	
 	
 	public void generatePlasmaTexture(Texture tex) {
@@ -79,7 +97,7 @@ public class NoiseyApp {
 		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
 		map.setArea(1.2f, 3.2f, 1.2f, 3.2f);
 		map.build();
-		map.remap();
+		map.remapToRange(-1.0f, 1.0f);
 		
 		colorGradient.addColor(0.0f, new Color(0x000000));
 		colorGradient.addColor(1.0f, new Color(0xEE44FF));
@@ -124,7 +142,7 @@ public class NoiseyApp {
 		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
 		map.setArea(1.2f, 3.2f, 1.2f, 3.2f);
 		map.build();
-		map.remap();
+		map.remapToRange(-1.0f, 1.0f);
 		
 		colorGradient.addColor(0.0f, new Color(0x007FFF));
 		colorGradient.addColor(1.0f, new Color(0xFFFFFF));
@@ -166,7 +184,7 @@ public class NoiseyApp {
 		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
 		map.setArea(1.2f, 3.2f, 1.2f, 3.2f);
 		map.build();
-		map.remap();
+		map.remapToRange(-1.0f, 1.0f);
 		
 		colorGradient.addColor(0.0f, new Color(0x225533));
 		colorGradient.addColor(1.0f, new Color(0xF8FFF8));
@@ -198,7 +216,7 @@ public class NoiseyApp {
 		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
 		map.setArea(1.2f, 3.2f, 1.2f, 3.2f);
 		map.build();
-		map.remap();
+		map.remapToRange(-1.0f, 1.0f);
 		
 		colorGradient.addColor(0.0f, new Color(0xAA0000));
 		colorGradient.addColor(0.2f, new Color(0xFF0000));
@@ -225,7 +243,7 @@ public class NoiseyApp {
 		NoiseMap map = new NoiseMap(tex.width, tex.height, bNoiseMaker);
 		map.setArea(1.2f, 5.2f, 1.2f, 5.2f);
 		map.build();
-		map.remap();
+		map.remapToRange(-1.0f, 1.0f);
 		
 		colorGradient.addColor(0.5f, new Color(0x000000));
 		colorGradient.addColor(0.94f, new Color(0x0000FF));
@@ -352,7 +370,7 @@ public class NoiseyApp {
 		
 		NoiseMap map = new NoiseMap(tex.width, tex.height, noiseSum);
 		map.build();
-		map.remap();
+		map.remapToRange(-1.0f, 1.0f);
 		
 		
 //		colorGradient.addColor(0.0f, new Color(0x000000));
@@ -411,7 +429,7 @@ public class NoiseyApp {
 	public void generateWood3Texture(Texture tex) {
 		// The "rings" of the wood log
 		Cylinders baseWood = new Cylinders();
-		baseWood.setFrequency(10.0f);
+		baseWood.setFrequency(12.0f);
 
 		// Perturb the ring pattern
 		Turbulence perturbedWood = new Turbulence(baseWood);
@@ -443,7 +461,7 @@ public class NoiseyApp {
 		
 		// Sample the log at an angle
 		Rotate rotatedWood = new Rotate(translatedWood);
-		rotatedWood.setAngles(7.0f, 0.0f, 0.0f);
+		rotatedWood.setAngles(9.0f, 0.0f, 0.0f);
 		
 		// One last bit of turbulence
 		Turbulence finalWood = new Turbulence(rotatedWood);
@@ -455,7 +473,7 @@ public class NoiseyApp {
 		NoiseMap map = new NoiseMap(tex.width, tex.height, finalWood);
 		map.setArea(-0.5f, 0.5f, -0.5f, 0.5f);
 		map.build();
-		map.remap();
+		map.remapToRange(-1.0f, 1.0f);
 		
 		
 		colorGradient.addColor(0.15f, new Color(0x281409)); // Dark
@@ -485,7 +503,7 @@ public class NoiseyApp {
 		NoiseMap map = new NoiseMap(tex.width, tex.height, landmassNoise);
 		map.setArea(1.2f, 5.2f, 1.2f, 5.2f);
 		map.build();
-		map.remap();
+		map.remapToRange(-1.0f, 1.0f);
 		
 		
 		// Generate landmass colour variance pattern

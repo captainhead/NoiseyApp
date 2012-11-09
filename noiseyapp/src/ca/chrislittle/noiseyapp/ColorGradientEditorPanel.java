@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
 
@@ -63,7 +64,7 @@ public class ColorGradientEditorPanel extends JPanel implements MouseMotionListe
 			
 			GradientPaint gradientPaint = new GradientPaint(p1,0,e1.getColor(), p2,0,e2.getColor());
 			g2d.setPaint(gradientPaint);
-			//g2d.fill(new Rectangle2D.Double(start, 0, p2-start, height));
+			g2d.fill(new Rectangle2D.Double(start, 0, p2-start, height));
 			
 			start = p2;
 		}

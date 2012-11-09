@@ -23,7 +23,7 @@ public class Turbulence extends NoiseSource {
 		yTurb = new BrownianNoise(new PerlinNoise());
 		zTurb = new BrownianNoise(new PerlinNoise());
 		
-		setOctaves(3);
+		setOctaves(1);
 	}
 	
 	public void setOctaves(int o) {

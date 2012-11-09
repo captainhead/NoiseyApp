@@ -47,19 +47,11 @@ public class NoiseMap {
 	}
 	
 	
-	/**
-	 * Retrieve the width of the 2D array
-	 * 
-	 * @return 2D array width
-	 */
 	public int getWidth() { return width; }
-
-	/**
-	 * Retrieve the height of the 2D array
-	 * 
-	 * @return 2D array height
-	 */
 	public int getHeight() { return height; }
+	
+	public float getMin() { return min; }
+	public float getMax() { return max; }
 	
 	/**
 	 * Retrieve the noise value for position x,y in the noise array.
@@ -106,7 +98,7 @@ public class NoiseMap {
 				
 				noise = source.noise(sample_x, sample_y, 0.0f);
 				
-				// Keep track of highest and lowest noise values
+				// Keep track of minimum and maximum noise values
 				if (noise < min)
 					min = noise;
 				else if (noise > max)
@@ -120,15 +112,27 @@ public class NoiseMap {
 	
 	
 	/**
-	 * Remap minimum and maximum noise values to -1 and 1 respectively.
+	 * Remap the previously generated noise values (within the range between
+	 * min and max) to the new range specified by minRange and maxRange. If
+	 * maxRange is less than or equal to minRange, the stored noise values
+	 * will not be modified.
+	 * 
+	 * @param minRange New minimum value that noise values will be mapped to.
+	 * @param maxRange New maximum value that noise values will be mapped to.
 	 */
-	public void remap() {
+	public void remapToRange(float minRange, float maxRange) {
+		// Avoid a divide by 0.
+		float maxSubMin = max - min;
+		if (maxSubMin <= 0.0f)
+			return;
+		// Avoid an ill-formed new range.
+		float newRangeSize = maxRange - minRange;
+		if (newRangeSize <= 0.0f)
+			return;
+		
 		float noise;
 		float scale;
-		
-		// Avoid a divide by 0
-		if (max - min == 0.0f)
-			return;
+		float inverseMaxSubMin = 1.0f / maxSubMin;
 		
 		for (int y=0; y<this.height; ++y) {
 			for (int x=0; x<this.width; ++x) {
@@ -136,10 +140,10 @@ public class NoiseMap {
 				noise = noiseValues[y*width + x];
 				
 				// "Stretch" and remap noise distribution to more evenly fill [-1, 1] range
-				scale = (noise - min) / (max - min);
-				noise = -1.0f + 2.0f*scale;
+				scale = (noise - min) * inverseMaxSubMin;
+				noise = minRange + newRangeSize*scale;
 				
-				// Clamp the noise value, just to be sure
+				// Clamp the noise value to ensure rounding error, etc. does push the value outide -1 to 1 range.
 				if (noise > 1.0f)
 					noise = 1.0f;
 				if (noise < -1.0f)
@@ -150,11 +154,8 @@ public class NoiseMap {
 		}
 		
 		
-		// Just in case, keep track of remapped min/max noise values
-		if (min > -1.0f)
-			min = -1.0f;
-		
-		if (max < 1.0f)
-			max = 1.0f;
+		// Just in case, set remapped min/max values to -1 and 1 respectively.
+		min = minRange;
+		max = maxRange;
 	}
 }
