@@ -144,10 +144,10 @@ public class NoiseMap {
 				noise = minRange + newRangeSize*scale;
 				
 				// Clamp the noise value to ensure rounding error, etc. does push the value outide -1 to 1 range.
-				if (noise > 1.0f)
-					noise = 1.0f;
-				if (noise < -1.0f)
-					noise = -1.0f;
+				if (noise > maxRange)
+					noise = maxRange;
+				if (noise < minRange)
+					noise = minRange;
 				
 				noiseValues[y*width + x] = noise;
 			}
