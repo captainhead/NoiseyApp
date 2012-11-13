@@ -28,23 +28,6 @@ public class NoiseyApp {
 	
 	
 	public NoiseyApp() {
-		// Setup window and texture drawing canvas
-		window = new JFrame("Noisey");
-		
-		JPanel contentPanel = new JPanel(new BorderLayout());
-		canvas = new TextureCanvas();
-		gradientEditorPanel = new ColorGradientEditorPanel();
-		
-		contentPanel.add(canvas, BorderLayout.CENTER);
-		contentPanel.add(gradientEditorPanel, BorderLayout.SOUTH);
-		window.setContentPane(contentPanel);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setResizable(false);
-		window.setVisible(true);
-		window.setLocation(150, 150);
-		window.pack();
-		
-		
 		// Create a texture
 		colorGradient = new ColorGradient();
 //		texture = new Texture(512,512);
@@ -62,6 +45,24 @@ public class NoiseyApp {
 //		generateLandmass(texture);
 
 		texture = generateTest();
+		
+
+		// Setup window and texture drawing canvas
+		window = new JFrame("Noisey");
+		
+		JPanel contentPanel = new JPanel(new BorderLayout());
+		canvas = new TextureCanvas();
+		gradientEditorPanel = new ColorGradientEditorPanel();
+		
+		contentPanel.add(canvas, BorderLayout.CENTER);
+		contentPanel.add(gradientEditorPanel, BorderLayout.SOUTH);
+		window.setContentPane(contentPanel);
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setResizable(false);
+		window.setVisible(true);
+		window.setLocation(150, 150);
+		window.pack();
+		
 		
 		// Send texture to display
 		canvas.setImage(texture);
